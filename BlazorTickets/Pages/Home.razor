@@ -1,0 +1,38 @@
+﻿@page "/"
+@using BlazorTicketsClient.Services
+@using Shared.Models
+@inject IBlazorTicketsService ticketsService
+<PageTitle>Home</PageTitle>
+
+<h1>Tickets</h1>
+
+@if(tickets != null)
+{
+	<ul>
+		@foreach(TicketModel ticket in tickets)
+		{
+			<li>
+				<p><strong>Title: </strong> @ticket.Title</p>
+				<p><strong>Description: </strong> @ticket.Description</p>
+			</li>
+		}
+	</ul>
+}
+
+@code{
+	private List<TicketModel>? tickets;
+
+	public TicketModel NewTicket { get; set; } = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			tickets = await ticketsService.GetTicketsAsync();
+		}
+		catch
+		{
+			
+		}
+	}
+}
