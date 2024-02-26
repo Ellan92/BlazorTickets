@@ -19,9 +19,12 @@ namespace BlazorTicketsApi.Repositories
             return await _context.Tickets.FirstOrDefaultAsync(p => p.Id == ticketId);
         }
 
+
+
         public async Task<List<TicketModel>> GetAllTicketsAsync()
         {
-            return await _context.Tickets.ToListAsync();
+            //return await _context.Tickets.ToListAsync();
+            return await _context.Tickets.Include(t => t.TicketTags).ThenInclude(tt => tt.Tag).Include(t => t.Responses).ToListAsync();
         }
 
         public async Task AddTicketAsync(TicketModel ticket)
@@ -62,6 +65,8 @@ namespace BlazorTicketsApi.Repositories
         public async Task<List<ResponseModel>> GetResponsesForTicketAsync(int ticketId)
         {
             return await _context.Responses.Where(r => r.TicketId == ticketId).ToListAsync();
+
+            
         }
 
         public async Task AddResponseAsync(ResponseModel response)

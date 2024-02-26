@@ -1,3 +1,4 @@
+using BlazorTicketsApi.Repositories;
 using BlazorTicketsAPI.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,9 +11,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddControllers().AddJsonOptions(options => 
+{ 
+	options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+});
+
 string? connectionString = builder.Configuration.GetConnectionString("DbConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddScoped<BlazorTicketsRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -38,5 +45,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowAll");
 
 app.Run();
